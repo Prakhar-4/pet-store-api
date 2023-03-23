@@ -4,6 +4,8 @@ from pydantic import BaseModel
 import pyrebase
 
 app = FastAPI()
+
+#defining database configurations
 firebaseConfig = {"apiKey": "AIzaSyBCpA-tQwpAb3W0Wseq3IoooNGs5y8UaEg",
                   "authDomain": "fir-course-56391.firebaseapp.com",
                   "databaseURL": "https://fir-course-56391-default-rtdb.firebaseio.com/",
@@ -17,7 +19,7 @@ firebase = pyrebase.initialize_app(firebaseConfig)
 
 db = firebase.database()
 
-
+#sample classes of pet
 class Pet(BaseModel):
     pet_name: str
     owner_name: str
@@ -36,7 +38,7 @@ class UpdatePet(BaseModel):
 
 pet_dict = {}
 
-
+#CREATE_pet_data
 @app.post("/create-Pet")
 def create_Pet(id: int, Pet: Pet):
     pet_dict = dict()
@@ -46,21 +48,21 @@ def create_Pet(id: int, Pet: Pet):
     res = db.child("pet").child(f"{id}").set(pet_dict)
     return {"created pet successfully"}, res
 
-
+#VIEW_pet_data
 @app.get("/get-Pet")
 def get_Pet(id: int):
     pet_dict = dict()
     res = dict(db.child("pet").child(f"{id}").get().val())
     return res
 
-
+#UPDATE_pet_data
 @app.put("/update-Pet")
 def update_Pet(id: int, key: str, val: str):
     pet_dict = dict()
     res = dict(db.child("pet").child(f"{id}").update({key: val}))
     return {"Update successful."}, res
 
-
+#REMOVE_pet_data
 @app.delete("/delete-Pet")
 def delete_Pet(Pet_id: int = Query(..., description="The ID of the Pet to delete")):
 
